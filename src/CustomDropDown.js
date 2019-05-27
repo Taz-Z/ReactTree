@@ -5,7 +5,6 @@ import {Tree} from "./Tree";
 export const CustomDropDown = (props) => {
     const [displayList, setDisplayList] = React.useState(false);
     const [selectedItems, setSelectedItems] = React.useState([]);
-    React.useEffect(() => console.log(selectedItems));
 
     /**
      * Adds uniques entries or removes bottom level nodes from display
@@ -16,9 +15,7 @@ export const CustomDropDown = (props) => {
     const onSelect = (isChecked, node) => {
         const newSelectedItems = changedNodesList(node);
         if (isChecked)  {
-            const idOfCurrItems = selectedItems.map(newNode => newNode.id);
-            setSelectedItems(removeDuplicates([...selectedItems,
-                ...newSelectedItems.filter(item => !idOfCurrItems.includes(item.id))])) //Filter non uniques then add
+            setSelectedItems(removeDuplicates([...selectedItems, ...newSelectedItems])) //Filter non uniques then add
         }
         else {
             const idOfNewItems = newSelectedItems.map(newNode => newNode.id);
@@ -45,6 +42,7 @@ export const CustomDropDown = (props) => {
 
     /**
      * Removes duplicates of from an array
+     *
      * @param arr array with potential duplicates
      * @returns {Array} of unique nodes
      */
@@ -73,10 +71,11 @@ export const CustomDropDown = (props) => {
             <div className={displayList ? 'customDropDown' : 'customDropDown-hide'}>
                 {selectedItems && selectedItems.length === 0 && <h3 className='dropdown-placeholder-text'>{props.placeholder ? props.placeholder : 'Press the arrow!'}</h3>}
                 {selectedItems && selectedItems.map((item) => (<button className='dropdown-select-button' onClick={() => removeFromDisplay(item.id)}>{item.name}</button>))}
-                {displayList &&
-                <Tree isChecked={false}
+                {displayList && <Tree isChecked={false}
                       treeNode={props.data}
-                      onSelect={(isChecked, node) => onSelect(isChecked, node)}/>
+                      onSelect={(isChecked, node) => onSelect(isChecked, node)}
+                      selectedItems = {selectedItems}
+                />
                 }
             </div>
             <div className={displayList ? 'triangle-up' : 'triangle-down'}
